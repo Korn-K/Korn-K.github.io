@@ -10,6 +10,8 @@ testt
 fdskpfsak;lfjskdlaj
 test 2
 
+$$f(x)=x^2$$
+
 fdsafjskl;fjskal
 
 You can use the [editor on GitHub](https://github.com/Korn-K/Korn-K.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
