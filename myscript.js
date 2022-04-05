@@ -1,17 +1,12 @@
-var username="asdasdasdadasd";
-var password;
-
 function login(){
-    var username = document.getElementById("username").innerHTML;
-    var password = document.getElementById("password").innerHTML;
+    var inputUsername = document.getElementById("username").value;
+    var inputPassword = document.getElementById("password").value;
+    localStorage.setItem("username",inputUsername);
+    localStorage.setItem("password",inputPassword);
     alert("Login Successful");
 }
 
-function getUsername(){
-    return username;
-
-}
-
-function getPassword(){
-    return password;
+function reset(){
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
 }
