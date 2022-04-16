@@ -36,126 +36,108 @@ var btn_update = document.getElementById("btn_update");
 var btn_delete = document.getElementById("btn_delete");
 var btn_all = document.getElementById("btn_all");
 
+let stdNo = 0;
 
-// insert function
+// INSERT DATA
 function insertData(){
-
   set(ref(db,"Student/"+sid.value),{
       "name": name.value,
       "lastname": lastname.value
-  })
-  .then(()=>{
+  }).then(()=>{
       location.reload(); 
       alert("data stored successfully");
-  })
-  .catch((error)=>{
+  }).catch((error)=>{
       alert("unsuccessful, error" + error);
   })
-}
-
-// SELECT DATA 
-function selectData(){
-    
-  const dbref = ref(db);
-  get(child(dbref,"Student/"+sid.value)).then((snapshot) =>{
-      if(snapshot.exists()){
-  
-          let std_id = sid.value
-          let name = snapshot.val().name;
-          let lastname = snapshot.val().lastname;
-          
-          // alert(std_id+ " " +name+" "+ lastname)
-          showIteminList(std_id, name,lastname)
-      }
-      else{
-          alert("No data dound");
-          
-      }
-  })
-  .catch((error) =>{
-      alert("unsuccessful, error"+error);
-  });
-}
-
-function removeAll(){
-  document.getElementById("lists").innerHTML = "";
-}
-function showIteminList(sid, name,lastname){
-  removeAll()
-  addItemToList(sid, name,lastname)
-}
-let stdNo = 0;
-function addItemToList(sid, name,lastname){
- 
-  var ul = document.getElementById('lists');
-  var header = document.createElement('h2');
-
-  var _sid = document.createElement('li');
-  var _name = document.createElement('li');
-  var _lastname = document.createElement('li');
-  
-  header.innerHTML = 'Student-'+(++stdNo);
-
-
-
-  _sid.innerHTML = 'ID: '+sid;
-  _name.innerHTML = 'Name: '+name;
-  _lastname.innerHTML = 'LASTNAME: '+lastname;
- 
-  ul.appendChild(header);
-  ul.appendChild(_sid);
-  ul.appendChild(_name);    
-  ul.appendChild(_name);
-  ul.appendChild(_lastname);
-
 }
 
 // UPDATE DATA 
 function updateData(){
   update(ref(db,"Student/"+sid.value),{
-      name: name.value,
-      lastname: lastname.value,
-
-  })
-  .then(()=>{
-      // alert("data update successfully");
-      location.reload();
-      
-  })
-  .catch((error)=>{
-      alert("unsccessful, error" + error);
+    "name": name.value,
+    "lastname": lastname.value
+  }).then(()=>{
+    alert("data update successfully");
+    location.reload();
+  }).catch((error)=>{
+    alert("unsccessful, error" + error);
   })
 }
 
-
-//DELETE
+//DELETE DATA
 function deleteData(){
-  remove(ref(db,"Student/"+sid.value))
-  .then(()=>{
-      alert("data delete successfully");
-      location.reload();
-  })
-  .catch((error)=>{
-      alert("unsuccessful, error" + error);
+  remove(ref(db,"Student/"+sid.value)).then(()=>{
+    alert("data delete successfully");
+    location.reload();
+  }).catch((error)=>{
+    alert("unsuccessful, error" + error);
   })
 }
 
+// SELECT ALL
 function selectAll(){
-  
   const dbRef = ref(db, 'Student/');
   onValue(dbRef, (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-          const childKey = childSnapshot.key;       
-          let std_name = childSnapshot.val().name;
-          let std_lastname = childSnapshot.val().lastname;
-          addItemToList(childKey, std_name, std_lastname);
-          // window.addEventListener('load',FetchAllData)
-      });
+    snapshot.forEach((childSnapshot) => {
+      const childKey = childSnapshot.key;       
+      let std_name = childSnapshot.val().name;
+      let std_lastname = childSnapshot.val().lastname;
+      addItemToList(childKey, std_name, std_lastname);
+    });
   }, {
-  onlyOnce: true
+    onlyOnce: true
   });
-  
 }
+
+// SELECT DATA
+function selectData(){
+  const dbref = ref(db);
+  get(child(dbref, "Student/"+sid.value)).then((snapshot) => {
+    if(snapshot.exists()){
+      let snapshot_sid = sid.value;
+      let snapshot_name = snapshot.val().name;
+      let snapshot_lastname = snapshot.val().lastname;
+      showIteminList(snapshot_sid, snapshot_name, snapshot_lastname);
+    } else {
+      alert("No data found");
+    }
+  }).catch((error) =>{
+    alert("unsuccessful, error"+error);
+  });
+}
+
+// ADD DATA TO LIST
+function addItemToList(sid, name, lastname){
+  var ul = document.getElementById('lists');
+  var _header = document.createElement('h2');
+  var _sid = document.createElement('li');
+  var _name = document.createElement('li');
+  var _lastname = document.createElement('li');
+  
+  _header.innerHTML = 'Student-'+(++stdNo);
+  _sid.innerHTML = 'ID: '+sid;
+  _name.innerHTML = 'Name: '+name;
+  _lastname.innerHTML = 'LASTNAME: '+lastname;
+ 
+  ul.appendChild(_header);
+  ul.appendChild(_sid);
+  ul.appendChild(_name);
+  ul.appendChild(_name);
+  ul.appendChild(_lastname);
+}
+
+// REMOVE ALL
+function removeAll(){
+  document.getElementById("lists").innerHTML = "";
+}
+
+// SINGLE ITEM IN LIST
+function showIteminList(sid, name, lastname){
+  removeAll()
+  addItemToList(sid, name, lastname)
+}
+
+
 
 // create event listener
 btn_insert.addEventListener('click',insertData);
